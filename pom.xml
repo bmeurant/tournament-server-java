@@ -40,7 +40,8 @@
         <!-- Contains all RESThub artifacts and transitive dependencies -->
         <repository>
             <id>resthub</id>
-            <url>http://nexus.pullrequest.org/content/groups/resthub</url>
+            <url>http://nexus.pullrequest.org/content/groups/public/</url>
+            <snapshots><enabled>true</enabled></snapshots>
         </repository>
     </repositories>
 
