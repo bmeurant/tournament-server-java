@@ -24,6 +24,8 @@ public class WebAppInitializer implements WebApplicationInitializer {
 
         servletContext.addListener(new ContextLoaderListener(appContext));
 
+        servletContext.addFilter("cors", CorsFilter.class).addMappingForUrlPatterns(null, false, "/*");
+
         //Database Console for managing the app's database (TODO : profile)
         ServletRegistration.Dynamic h2Servlet = servletContext.addServlet("h2console", WebServlet.class);
         h2Servlet.setLoadOnStartup(2);
