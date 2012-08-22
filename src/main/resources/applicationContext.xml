@@ -3,6 +3,7 @@
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context 
@@ -10,11 +11,19 @@
                            http://www.springframework.org/schema/mvc 
                            http://www.springframework.org/schema/mvc/spring-mvc.xsd
                            http://www.springframework.org/schema/data/jpa 
-                           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+                           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <import resource="classpath*:resthubDefaultWebServerContext.xml" />
-    <mvc:default-servlet-handler />
+    <import resource="classpath*:resthubDefaultWebServerContext.xml"/>
+    <mvc:default-servlet-handler/>
 
-    <context:component-scan base-package="org.resthub.sample.tournament" />
-    <jpa:repositories base-package="org.resthub.sample.tournament.repository" />
+    <context:component-scan base-package="org.resthub.sample.tournament"/>
+    <jpa:repositories base-package="org.resthub.sample.tournament.repository"/>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="300000"/>
+        <!-- Max size in bytes. -->
+    </bean>
+
 </beans>
