@@ -9,11 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Created with IntelliJ IDEA.
- * User: A208574
- * Date: 21/08/12
- * Time: 13:12
- * To change this template use File | Settings | File Templates.
+ * @author Baptiste Meurant<baptiste.meurant@gmail.com>
  */
 public class CorsFilter extends OncePerRequestFilter {
 
