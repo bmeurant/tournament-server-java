@@ -40,17 +40,6 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
     @Value("${photosPath}")
     private String photoPath;
 
-    /**
-     * resthub uses 0-indexed pages, but I want my service interface to use 1-indexed pages
-     *
-     * @see org.resthub.web.controller.RestController#findPaginated
-     */
-    @Override
-    public Page<Participant> findPaginated(@RequestParam(value = "page", required = true) Integer pageId,
-                                           @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-        return super.findAll(pageId - 1, size);
-    }
-
     @RequestMapping(value = "{id}/photo", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void storePhoto(@PathVariable("id") Long participantId, @RequestParam MultipartFile file) {
