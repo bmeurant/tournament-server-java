@@ -54,11 +54,14 @@
         <!-- Contains all RESThub artifacts and transitive dependencies -->
         <repository>
             <id>resthub</id>
-            <url>http://nexus.pullrequest.org/group/resthub</url>
+            <url>http://nexus.pullrequest.org/content/groups/resthub</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>resthub snapshots</id>
-            <url>http://nexus.pullrequest.org/repositories/snapshots/</url>
+            <url>http://nexus.pullrequest.org/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
