@@ -10,9 +10,12 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
+import java.util.ResourceBundle;
 
 @Entity
 public class Participant {
+
+    public static final ResourceBundle CONFIG = ResourceBundle.getBundle("config");
 
     private Long id;
     private String firstname;
@@ -31,6 +34,18 @@ public class Participant {
     }
 
     public Participant(String firstname, String lastname, String email) {
+        this(firstname, lastname);
+        this.email = email;
+    }
+
+    /**
+     * Fake constructor to allow JSON serialization for transient fields
+     *
+     * @param firstname
+     * @param lastname
+     * @param email
+     */
+    public Participant(String firstname, String lastname, String email, String pictureUrl, String pictMin) {
         this(firstname, lastname);
         this.email = email;
     }
@@ -83,6 +98,10 @@ public class Participant {
         return (Boolean.TRUE == this.hasPicture) ? "/participant/" + this.id + "/photo" : null;
     }
 
+    public void setPictureUrl(String pictureUrl) {
+        return;
+    }
+
     @Transient
     public String getPictMin() {
         if (this.hasPicture == null) {
@@ -94,6 +113,10 @@ public class Participant {
         return (Boolean.TRUE == this.hasPicture) ? "/participant/" + this.id + "/min-photo" : null;
     }
 
+    public void setPictMin(String pictMin) {
+        return;
+    }
+
     @Transient
     @XmlTransient
     @JsonIgnore
@@ -101,7 +124,7 @@ public class Participant {
         File file = null;
 
         String[] formats = {"gif", "GIF", "jpg", "jpeg", "JPG", "JPEG", "png", "PNG"};
-        String fileName = "D:/Dev/" + "participant/" + this.id;
+        String fileName = CONFIG.getString("photosPath") + "participant/" + this.id;
 
         for (String format : formats) {
             File tmpFile = new File(fileName + "." + format);

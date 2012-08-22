@@ -5,27 +5,21 @@ import org.apache.commons.io.IOUtils;
 import org.resthub.sample.tournament.model.Participant;
 import org.resthub.sample.tournament.repository.ParticipantRepository;
 import org.resthub.web.controller.RepositoryBasedRestController;
-import org.resthub.web.exception.BadRequestException;
 import org.resthub.web.exception.InternalServerErrorException;
 import org.resthub.web.exception.NotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/participant")
@@ -42,6 +36,9 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
     public Long getIdFromResource(Participant resource) {
         return resource.getId();
     }
+
+    @Value("${photosPath}")
+    private String photoPath;
 
     /**
      * resthub uses 0-indexed pages, but I want my service interface to use 1-indexed pages
@@ -72,7 +69,7 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
         }
 
         String type = file.getContentType().split("/")[1];
-        String fileNameToCreate = "D:/Dev/" + "participant/" + participantId + "." + type;
+        String fileNameToCreate = photoPath + "participant/" + participantId + "." + type;
 
         File newFile = new File(fileNameToCreate);
         try {
@@ -137,6 +134,23 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
             resp.flushBuffer();
         } catch (IOException e) {
             throw new InternalServerErrorException("cannot read image file", e);
+        }
+    }
+
+    @RequestMapping(value = "{id}/photo", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePhoto(@PathVariable("id") Long participantId) {
+        Assert.notNull(participantId, "id cannot be null");
+
+        Participant participant = this.repository.findOne(participantId);
+        if (participant == null) {
+            throw new NotFoundException();
+        }
+
+        // remove photo if already exists
+        File oldFile = participant.getPictureFile();
+        if (null != oldFile) {
+            oldFile.delete();
         }
     }
 
