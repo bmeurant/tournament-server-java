@@ -86,6 +86,16 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
     @RequestMapping(value = "{id}/photo", method = RequestMethod.GET)
     public void getPhoto(@PathVariable("id") Long participantId, HttpServletResponse resp) {
 
+        getPicture(participantId, resp, false);
+    }
+
+    @RequestMapping(value = "{id}/min-photo", method = RequestMethod.GET)
+    public void getMinPhoto(@PathVariable("id") Long participantId, HttpServletResponse resp) {
+
+        getPicture(participantId, resp, true);
+    }
+
+    private void getPicture(Long participantId, HttpServletResponse resp, Boolean isMin) {
         Assert.notNull(participantId, "id cannot be null");
 
         Participant participant = this.repository.findOne(participantId);
@@ -116,6 +126,10 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
         resp.setHeader("Accept-Ranges", "bytes");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
         resp.setContentLength(content.length);
+
+        if (isMin == Boolean.TRUE) {
+            resp.setHeader("Cache-Control", "public, max-age=3600");
+        }
 
         try {
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
