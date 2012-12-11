@@ -11,9 +11,6 @@
                            http://www.springframework.org/schema/data/jpa 
                            http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <import resource="classpath*:resthubJpaContext.xml"/>
-    <import resource="classpath*:resthubWebServerContext.xml"/>
-
     <context:component-scan base-package="org.resthub.sample.tournament"/>
     <jpa:repositories base-package="org.resthub.sample.tournament.repository"/>
 

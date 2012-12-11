@@ -5,10 +5,9 @@ import org.apache.commons.io.IOUtils;
 import org.resthub.sample.tournament.model.Participant;
 import org.resthub.sample.tournament.repository.ParticipantRepository;
 import org.resthub.web.controller.RepositoryBasedRestController;
-import org.resthub.web.exception.InternalServerErrorException;
-import org.resthub.web.exception.NotFoundException;
+import org.resthub.web.exception.InternalServerErrorClientException;
+import org.resthub.web.exception.NotFoundClientException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -32,11 +31,6 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
         this.repository = repository;
     }
 
-    @Override
-    public Long getIdFromResource(Participant resource) {
-        return resource.getId();
-    }
-
     @Value("${photosPath}")
     private String photoPath;
 
@@ -48,7 +42,7 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
 
         Participant participant = this.repository.findOne(participantId);
         if (participant == null) {
-            throw new NotFoundException();
+            throw new NotFoundClientException(participantId + "does not exists");
         }
 
         // remove photo if already exists
@@ -65,7 +59,7 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
             FileUtils.writeByteArrayToFile(newFile, file.getBytes());
         } catch (IOException e) {
             logger.error("Cannot read upload file", e);
-            throw new InternalServerErrorException("Cannot read upload file", e);
+            throw new InternalServerErrorClientException("Cannot read upload file", e);
         }
     }
 
@@ -86,12 +80,12 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
 
         Participant participant = this.repository.findOne(participantId);
         if (participant == null) {
-            throw new NotFoundException();
+            throw new NotFoundClientException(participantId + " does not exists");
         }
 
         File file = participant.getPictureFile();
         if (file == null) {
-            throw new NotFoundException();
+            throw new NotFoundClientException(participant.getPictureFile().getName() + " does not exists");
         }
 
         resp.reset();
@@ -103,7 +97,7 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
             content = IOUtils.toByteArray(fileInputStream);
         } catch (IOException e) {
             logger.error("Cannot read file", e);
-            throw new InternalServerErrorException("Cannot read file", e);
+            throw new InternalServerErrorClientException("Cannot read file", e);
         }
 
         String fileName = file.getName();
@@ -122,7 +116,7 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
             FileCopyUtils.copy(in, resp.getOutputStream());
             resp.flushBuffer();
         } catch (IOException e) {
-            throw new InternalServerErrorException("cannot read image file", e);
+            throw new InternalServerErrorClientException("cannot read image file", e);
         }
     }
 
@@ -133,7 +127,7 @@ public class ParticipantController extends RepositoryBasedRestController<Partici
 
         Participant participant = this.repository.findOne(participantId);
         if (participant == null) {
-            throw new NotFoundException();
+            throw new NotFoundClientException(participantId + " does not exists");
         }
 
         // remove photo if already exists

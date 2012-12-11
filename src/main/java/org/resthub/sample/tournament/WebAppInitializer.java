@@ -15,6 +15,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         XmlWebApplicationContext appContext = new XmlWebApplicationContext();
+        appContext.getEnvironment().setActiveProfiles("resthub-jpa", "resthub-web-server", "resthub-validation");
         String[] locations = { "classpath*:resthubContext.xml", "classpath*:applicationContext.xml" };
         appContext.setConfigLocations(locations);
 
@@ -30,5 +31,6 @@ public class WebAppInitializer implements WebApplicationInitializer {
         ServletRegistration.Dynamic h2Servlet = servletContext.addServlet("h2console", WebServlet.class);
         h2Servlet.setLoadOnStartup(2);
         h2Servlet.addMapping("/console/database/*");
+
     }
 }
